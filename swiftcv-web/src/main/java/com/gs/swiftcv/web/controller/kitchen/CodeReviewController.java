@@ -1,6 +1,7 @@
 package com.gs.swiftcv.web.controller.kitchen;
 
 import com.gs.swiftcv.service.model.KitchenCategoryVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("codeReview")
+@Slf4j
 public class CodeReviewController {
 
 
@@ -26,7 +28,7 @@ public class CodeReviewController {
         list.add(description);
         while (true) {
             for (String s : list) {
-                System.out.println(s);
+                log.error(s);
             }
         }
     }
