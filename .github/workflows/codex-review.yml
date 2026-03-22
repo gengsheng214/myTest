@@ -1,0 +1,148 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Get PR diff for Java and Vue related files
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff origin/${{ github.base_ref }}...HEAD -- \
+            '*.java' \
+            '*.vue' \
+            '*.js' \
+            '*.ts' \
+            '*.jsx' \
+            '*.tsx' \
+            '*.css' \
+            '*.scss' \
+            '*.sass' \
+            '*.html' \
+            'package.json' \
+            'vite.config.js' \
+            'vite.config.ts' \
+            'webpack.config.js' \
+            > diff.txt
+
+          if [ ! -s diff.txt ]; then
+            echo "No matching file changes found." > review.txt
+          fi
+
+      - name: Install OpenAI SDK
+        if: hashFiles('diff.txt') != ''
+        run: pip install --upgrade openai
+
+      - name: Run AI Review
+        if: hashFiles('diff.txt') != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python <<'EOF'
+          import os
+          from openai import OpenAI
+
+          if os.path.exists("review.txt"):
+              raise SystemExit(0)
+
+          with open("diff.txt", "r", encoding="utf-8") as f:
+              diff = f.read().strip()
+
+          if not diff:
+              with open("review.txt", "w", encoding="utf-8") as f:
+                  f.write("本次 PR 没有检测到 .java、.vue 或 Vue 相关前端文件变更。")
+              raise SystemExit(0)
+
+          diff = diff[:20000]
+
+          prompt = f"""
+你是一名严格、专业的代码审查工程师。请审查下面这个 Pull Request 的代码改动。
+
+审查范围仅针对以下类型文件：
+- Java 后端：.java
+- Vue 前端：.vue
+- Vue 相关前端文件：.js, .ts, .jsx, .tsx, .css, .scss, .sass, .html
+- 前端配置文件：package.json, vite.config.js, vite.config.ts, webpack.config.js
+
+请重点检查：
+1. Bug 和逻辑错误
+2. 空指针、边界条件、异常处理问题
+3. 安全风险
+4. 性能问题
+5. Java 代码规范与可维护性
+6. Vue 组件设计、响应式使用、生命周期、状态管理问题
+7. 前端常见问题，如：
+   - 未处理的异步错误
+   - 不必要的重渲染
+   - 组件通信不合理
+   - API 调用风险
+   - 样式污染
+   - 可维护性差的写法
+
+输出要求：
+- 用中文输出
+- 如果没有明显问题，直接写“未发现明显问题”
+- 只输出真正有价值的问题，不要泛泛而谈
+- 每个问题尽量包含：
+  - 问题标题
+  - 风险说明
+  - 修改建议
+
+请按下面格式输出：
+
+## 总体结论
+
+## 发现的问题
+### 1. ...
+- 风险：
+- 建议：
+
+### 2. ...
+- 风险：
+- 建议：
+
+## 可选优化建议
+
+以下是 PR diff：
+{diff}
+"""
+
+          client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+          response = client.chat.completions.create(
+              model="gpt-4o-mini",
+              messages=[
+                  {"role": "system", "content": "你是资深代码审查工程师，擅长 Java 和 Vue 前后端项目审查。"},
+                  {"role": "user", "content": prompt}
+              ],
+              temperature=0.2,
+          )
+
+          review = response.choices[0].message.content
+
+          with open("review.txt", "w", encoding="utf-8") as f:
+              f.write(review if review else "未生成审查结果。")
+          EOF
+
+      - name: Comment PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: review.txt
