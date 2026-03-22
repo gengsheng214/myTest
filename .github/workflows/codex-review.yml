@@ -54,15 +54,37 @@ jobs:
       - name: Install OpenAI SDK
         run: python -m pip install --upgrade pip openai
 
+      - name: Check secret presence
+        env:
+          CODE_REVIEW: ${{ secrets.CODE_REVIEW }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        shell: bash
+        run: |
+          if [ -n "$CODE_REVIEW" ]; then
+            echo "CODE_REVIEW is present"
+          else
+            echo "CODE_REVIEW is empty"
+          fi
+
+          if [ -n "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is present"
+          else
+            echo "OPENAI_API_KEY is empty"
+          fi
+
       - name: Run AI Review
         if: hashFiles('review.txt') == ''
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.CODE_REVIEW }}
         shell: bash
         run: |
           python - <<'PY'
           import os
           from openai import OpenAI
+
+          api_key = os.environ.get("OPENAI_API_KEY", "")
+          if not api_key:
+              raise RuntimeError("OPENAI_API_KEY is empty in workflow environment")
 
           with open("diff.txt", "r", encoding="utf-8") as f:
               diff = f.read().strip()
@@ -102,43 +124,18 @@ jobs:
           - 用中文输出
           - 如果没有明显问题，直接写“未发现明显问题”
           - 只输出真正有价值的问题，不要泛泛而谈
-          - 每个问题尽量包含：
-            - 问题标题
-            - 风险说明
-            - 修改建议
-
-          请按下面格式输出：
-
-          ## 总体结论
-
-          ## 发现的问题
-          ### 1. ...
-          - 风险：
-          - 建议：
-
-          ### 2. ...
-          - 风险：
-          - 建议：
-
-          ## 可选优化建议
 
           以下是 PR diff：
           {diff}
           """
 
-          client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+          client = OpenAI(api_key=api_key)
 
           response = client.chat.completions.create(
               model="gpt-4o-mini",
               messages=[
-                  {
-                      "role": "system",
-                      "content": "你是资深代码审查工程师，擅长 Java 和 Vue 前后端项目审查。"
-                  },
-                  {
-                      "role": "user",
-                      "content": prompt
-                  }
+                  {"role": "system", "content": "你是资深代码审查工程师，擅长 Java 和 Vue 前后端项目审查。"},
+                  {"role": "user", "content": prompt}
               ],
               temperature=0.2
           )
