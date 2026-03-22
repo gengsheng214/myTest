@@ -29,6 +29,8 @@ public class CodeReviewController {
         while (true) {
             for (String s : list) {
                 log.error(s);
+                int i =1/0;
+                System.out.println(s);
             }
         }
     }
