@@ -1,0 +1,24 @@
+
+.recipe-item.data-v-e8669a54 {
+  margin-top: 16rpx;
+}
+.name.data-v-e8669a54 {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #202020;
+}
+.desc.data-v-e8669a54 {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+.meta.data-v-e8669a54 {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #868686;
+}
+

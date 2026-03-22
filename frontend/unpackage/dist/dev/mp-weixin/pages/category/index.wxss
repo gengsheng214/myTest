@@ -1,0 +1,41 @@
+
+.category-scroll.data-v-2f754cba {
+  white-space: nowrap;
+}
+.category-row.data-v-2f754cba {
+  display: flex;
+  gap: 16rpx;
+}
+.chip.data-v-2f754cba {
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: #f2f4f7;
+  color: #666;
+  font-size: 24rpx;
+}
+.chip.active.data-v-2f754cba {
+  background: #1f7aff;
+  color: #fff;
+}
+.recipe-item.data-v-2f754cba {
+  margin-top: 16rpx;
+}
+.name.data-v-2f754cba {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #222;
+}
+.desc.data-v-2f754cba {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 25rpx;
+  color: #666;
+}
+.meta.data-v-2f754cba {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #888;
+}
+

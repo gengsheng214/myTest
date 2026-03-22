@@ -1,0 +1,30 @@
+
+.hero.data-v-57280228 {
+  margin-top: 24rpx;
+}
+.title.data-v-57280228 {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+.subtitle.data-v-57280228 {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+.entry-title.data-v-57280228 {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #202020;
+}
+.entry-desc.data-v-57280228 {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: #7a7a7a;
+  line-height: 1.6;
+}
+

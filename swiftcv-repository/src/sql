@@ -1,0 +1,151 @@
+-- 用户表
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    avatar_url VARCHAR(255),
+    preferences JSON COMMENT '用户偏好设置',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 食材表
+CREATE TABLE ingredients (
+    ingredient_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    category VARCHAR(20) COMMENT '蔬菜、水果、肉类、调料等',
+    unit VARCHAR(10) COMMENT 'g、ml、个、勺等',
+    shelf_life INT COMMENT '保质期天数',
+    icon_url VARCHAR(255),
+    is_common BOOLEAN DEFAULT TRUE COMMENT '是否为常见食材',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_category (category),
+    INDEX idx_name (name)
+);
+
+-- 用户食材库存表
+CREATE TABLE user_ingredients (
+    user_ingredient_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    ingredient_id INT NOT NULL,
+    quantity DECIMAL(10,2) COMMENT '数量',
+    unit VARCHAR(10),
+    purchase_date DATE,
+    expiry_date DATE,
+    storage_location VARCHAR(20) COMMENT '冷藏、冷冻、常温',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id),
+    INDEX idx_user_expiry (user_id, expiry_date)
+);
+
+-- 菜谱分类表
+CREATE TABLE recipe_categories (
+    category_id INT PRIMARY KEY AUTO_INCREMENT,
+    parent_id INT DEFAULT 0,
+    name VARCHAR(30) NOT NULL,
+    description TEXT,
+    icon_url VARCHAR(255),
+    sort_order INT DEFAULT 0,
+    INDEX idx_parent (parent_id)
+);
+
+-- 菜谱表
+CREATE TABLE recipes (
+    recipe_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    category_id INT,
+    difficulty ENUM('简单', '中等', '困难') DEFAULT '简单',
+    prep_time INT COMMENT '准备时间(分钟)',
+    cook_time INT COMMENT '烹饪时间(分钟)',
+    total_time INT COMMENT '总时间(分钟)',
+    servings INT COMMENT '份量',
+    calories INT COMMENT '卡路里',
+    cover_image VARCHAR(255),
+    video_url VARCHAR(255),
+    required_ingredients TEXT COMMENT '所需食材JSON数组',
+    tips TEXT COMMENT '小贴士',
+    views INT DEFAULT 0,
+    favorites_count INT DEFAULT 0,
+    average_rating DECIMAL(3,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES recipe_categories(category_id),
+    INDEX idx_category (category_id),
+    INDEX idx_rating (average_rating DESC),
+    INDEX idx_favorites (favorites_count DESC)
+);
+
+-- 菜谱步骤表
+CREATE TABLE recipe_steps (
+    step_id INT PRIMARY KEY AUTO_INCREMENT,
+    recipe_id INT NOT NULL,
+    step_number INT NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(255),
+    timer_duration INT COMMENT '计时器时长(秒)',
+    tips TEXT,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id) ON DELETE CASCADE,
+    INDEX idx_recipe (recipe_id, step_number)
+);
+
+-- 用料明细表
+CREATE TABLE recipe_ingredients (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    recipe_id INT NOT NULL,
+    ingredient_id INT,
+    ingredient_name VARCHAR(50) COMMENT '允许自定义食材名',
+    quantity DECIMAL(10,2),
+    unit VARCHAR(10),
+    notes VARCHAR(100) COMMENT '可选，如"切块"、"切片"等',
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients(ingredient_id),
+    INDEX idx_recipe (recipe_id)
+);
+
+-- 用户收藏表
+CREATE TABLE user_favorites (
+    favorite_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
+    UNIQUE KEY uk_user_recipe (user_id, recipe_id)
+);
+
+-- 浏览历史表
+CREATE TABLE browsing_history (
+    history_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
+    viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
+    INDEX idx_user_history (user_id, viewed_at DESC)
+);
+
+-- 智能推荐记录表
+CREATE TABLE ai_recommendations (
+    recommendation_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    available_ingredients TEXT COMMENT '用户现有食材',
+    recommended_recipes TEXT COMMENT '推荐菜谱ID数组',
+    recommendation_type VARCHAR(20) COMMENT '完全匹配、需补充',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+
+
+-- 添加常用查询索引
+CREATE INDEX idx_recipes_title ON recipes(title);
+CREATE INDEX idx_recipes_difficulty ON recipes(difficulty);
+CREATE INDEX idx_recipes_total_time ON recipes(total_time);
+CREATE INDEX idx_recipes_created ON recipes(created_at DESC);
+
+-- 联合索引
+CREATE INDEX idx_ingredient_category ON ingredients(category, name);
+CREATE INDEX idx_user_recipe ON user_favorites(user_id, recipe_id);

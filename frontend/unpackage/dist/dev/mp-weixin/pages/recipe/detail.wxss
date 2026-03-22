@@ -1,0 +1,63 @@
+
+.title.data-v-9d55896e {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+.meta.data-v-9d55896e {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: #767676;
+  line-height: 1.5;
+}
+.desc.data-v-9d55896e {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 27rpx;
+  color: #3d3d3d;
+  line-height: 1.65;
+}
+.ingredient-row.data-v-9d55896e {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.ingredient-name.data-v-9d55896e {
+  font-size: 27rpx;
+  color: #222;
+}
+.ingredient-qty.data-v-9d55896e {
+  font-size: 25rpx;
+  color: #666;
+}
+.step-item.data-v-9d55896e {
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.step-title.data-v-9d55896e {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+.step-desc.data-v-9d55896e {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: #505050;
+  line-height: 1.65;
+}
+.step-tip.data-v-9d55896e {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #888;
+}
+.tips-card.data-v-9d55896e {
+  margin-bottom: 28rpx;
+}
+

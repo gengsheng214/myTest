@@ -1,0 +1,38 @@
+{
+  "name": "my-chicken-kitchen",
+  "appid": "__UNI__KITCHEN",
+  "description": "厨房功能微信小程序",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "transformPx": true,
+  "pages": [
+    "pages/index/index",
+    "pages/fridge/index",
+    "pages/recommend/index",
+    "pages/category/index",
+    "pages/recipe/detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "我的厨房",
+    "navigationBarTextStyle": "black"
+  },
+  "usingComponents": true,
+  "mp-weixin": {
+    "appid": "wx-your-appid",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "enhance": true,
+      "postcss": true,
+      "minified": true
+    }
+  },
+  "splashscreen": {
+    "alwaysShowBeforeRender": true,
+    "waiting": true,
+    "autoclose": true,
+    "delay": 0
+  }
+}

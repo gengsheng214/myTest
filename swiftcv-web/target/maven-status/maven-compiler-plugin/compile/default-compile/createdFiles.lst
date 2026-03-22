@@ -1,0 +1,6 @@
+com\gs\swiftcv\web\controller\UserController.class
+com\gs\swiftcv\web\Application.class
+com\gs\swiftcv\web\config\InterceptorConfig.class
+com\gs\swiftcv\web\config\CorsConfig.class
+com\gs\swiftcv\web\controller\kitchen\KitchenController.class
+com\gs\swiftcv\web\interceptor\AuthInterceptor.class

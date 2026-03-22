@@ -1,0 +1,4 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Fri Mar 13 17:48:08 CST 2026
+@default-aliyun-public-https\://maven.aliyun.com/repository/public/.lastUpdated=1773395288264
+https\://maven.aliyun.com/repository/public/.error=Could not transfer artifact org.apache.maven.plugins\:maven-deploy-plugin\:pom\:2.8.2 from/to aliyun-public (https\://maven.aliyun.com/repository/public)\: Permission denied\: connect

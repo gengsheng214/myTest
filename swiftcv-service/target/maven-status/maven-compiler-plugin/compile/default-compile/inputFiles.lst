@@ -1,0 +1,14 @@
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\api\kitchen\KitchenService.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\RecipeCardVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\impl\UserServiceImpl.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\RecipeIngredientVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\RecipeDetailVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\KitchenCategoryVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\RecipeStepVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\FridgeIngredientSaveRequest.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\impl\kitchen\OpenAiRecipeAdvisor.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\FridgeIngredientVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\api\kitchen\RecipeAiAdvisor.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\model\RecipeRecommendationVO.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\api\UserService.java
+E:\AI\code\chicken\swiftcv-service\src\main\java\com\gs\swiftcv\service\impl\kitchen\KitchenServiceImpl.java
