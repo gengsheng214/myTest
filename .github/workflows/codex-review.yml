@@ -1,1 +1,66 @@
+name: AI Code Review
 
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get diff
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff origin/${{ github.base_ref }} > diff.txt
+
+      - name: Install Python deps
+        run: pip install openai
+
+      - name: Run AI Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python <<EOF
+          import os
+          from openai import OpenAI
+
+          client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+
+          diff = open("diff.txt").read()[:8000]
+
+          prompt = f"""
+          你是资深代码审查工程师，请审查以下代码变更：
+
+          要求：
+          - 找 bug
+          - 找安全问题
+          - 找性能问题
+          - 给优化建议
+
+          输出格式：
+          ### 问题
+          ### 风险
+          ### 建议
+
+          代码：
+          {diff}
+          """
+
+          resp = client.chat.completions.create(
+              model="gpt-4o-mini",
+              messages=[{"role": "user", "content": prompt}],
+          )
+
+          review = resp.choices[0].message.content
+
+          with open("review.txt", "w") as f:
+              f.write(review)
+          EOF
+
+      - name: Comment PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: review.txt
