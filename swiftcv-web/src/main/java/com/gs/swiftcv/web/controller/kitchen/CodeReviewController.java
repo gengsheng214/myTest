@@ -30,7 +30,7 @@ public class CodeReviewController {
             for (String s : list) {
                 log.error(s);
                 int i =1/0;
-                System.out.println(s);
+                System.out.println(i);
             }
         }
     }
